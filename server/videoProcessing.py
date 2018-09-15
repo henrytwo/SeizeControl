@@ -5,48 +5,29 @@ import cv2
 import numpy
 from matplotlib import pyplot
 
-img = cv2.imread('messi5.jpg',0)
-edges = cv2.Canny(img,100,200)
 
-img = cv2.imread('dave.jpg')
-gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-edges = cv2.Canny(gray,50,150,apertureSize = 3)
 
-lines = cv2.HoughLines(edges,1,np.pi/180,200)
-for rho,theta in lines[0]:
-    a = numpy.cos(theta)
-    b = numpy.sin(theta)
-    x0 = a*rho
-    y0 = b*rho
-    x1 = int(x0 + 1000*(-b))
-    y1 = int(y0 + 1000*(a))
-    x2 = int(x0 - 1000*(-b))
-    y2 = int(y0 - 1000*(a))
 
-    cv2.line(img,(x1,y1),(x2,y2),(0,0,255),2)
 
-cv2.imwrite('houghlines3.jpg',img)
 
-plt.show()
+
 
 class video:
     def __init__(self, url):
         self.url = url
-        self.getVid()
         self.vid = 0
         self.width = 0
         self.height = 0
+        self.getVid()
         self.frameArray = []
         self.frameCount = len(self.frameArray)
+        self.getFrames()
         self.maxDist = 443.405007
         self.scores = []
 
     #downloads vid to be processed
     def getVid(self):
-
-
         YouTube(self.url).streams.last().download()
-
         self.vid = 0
         self.width = 0
         self.height = 0
@@ -55,13 +36,47 @@ class video:
     def getFrames(self):
         self.frameArray = []
         self.frameCount = len(self.frameArray)
+        for i in range(10): #Go through all vid frames
+            img = cv2.imread('ex.jpg', 0) #Put frame in here
+            edges = cv2.Canny(img, 1, 500)
+            self.frameArray.append(edges)
+
 
     def colourDist(self, col1, col2):
         return sqrt((col2[0] - col1[0])**2 + (col2[1] - col1[1])**2 + (col2[2] - col1[2])**2)
 
+    #takes black and white cv edge frame and finds stripe patterns
+    def stripeVal(self, Eframe):
+        lineList = [[[0, 0] for j in range(80)] for i in range(45)]
+        for i in range(0, self.height, self.height//45):
+            for j in range(0, self.width, self.width//80):
+                n = 0
+                points = []
+                for k in range(self.height//80):
+                    for m in range(self.width//45):
+                        if Eframe[i*self.height//45+k][j*self.width//80+m] == (255, 255, 255):
+                            n += 1
+                            points.append((i*self.height//45+k, j*self.width//80+m))
+                if len(points) != 0:
+                    sumx = sum(a[0] for a in points)
+                    sumy = sum(a[1] for a in points)
+                    sumxy = sum(a[0]*a[1] for a in points)
+                    sumxx = sum(a[0]**2 for a in points)
+                    sumyy = sum(a[1]**2 for a in points)
+                    correlation = (n*sumxy-sumx*sumy)/sqrt((n*sumxx-sumx**2)*(n*sumyy-sumy**2))
+                    slope = (sumxy - ((sumx*sumy)/n))/(sumxx - (sumx**2)/n)
+                    if correlation > 0.9:
+                        lineList[i][j] = [correlation, slope]
+                    else:
+                        lineList[i][j] = None
+                else:
+                    lineList[i][j] = None
+        score = 0
+        for i in lineList:
+            for j in i:
+                pass
 
-    def stripeVal(self, Aframe):
-        pass
+
 
     def checkerVal(self, Aframe):
         pass
