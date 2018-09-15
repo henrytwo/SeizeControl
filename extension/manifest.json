@@ -8,6 +8,7 @@
     "scripts": ["thirdParty/jquery-3.3.1.slim.min.js", "thirdParty/sweetalert.min.js", "background.js"],
     "persistent": false
   },
+<<<<<<< Updated upstream
   "content_scripts" : [
     {
       "matches": [
@@ -17,6 +18,14 @@
         "content.js"
       ],
       "run_at": "document_idle"
+=======
+
+  "content_scripts" : [
+    {
+      "matches": ["https://developer.chrome.com/*"],
+      "css": ["content.css"]
+
+>>>>>>> Stashed changes
     }
   ],
   "page_action": {
