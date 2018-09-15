@@ -1,6 +1,9 @@
-/*$(document).ready(function() {
+$(document).ready(function() {
     $('#pause').on('click', function() {
-        console.log("Hello, world!")
+
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.runtime.sendMessage({command: "pause"});
+        });
+
     });
 });
-*/
