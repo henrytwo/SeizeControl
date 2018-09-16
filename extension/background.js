@@ -24,8 +24,11 @@ function listen(id) {
     var db = firebase.firestore();
 
     alert("ok we listening")
-    const listener = db.collection("videos").doc(id).onSnapshot(function(data) {
-        alert('STUFF CHANGED!!!!' + data.exists)
+    var listener = db.collection("videos").doc(id).onSnapshot(function(data) {
+        if (data.exists) {
+            alert('LOLOLOL WE GOT IT')
+            listener();
+        }
     })
 
 }
