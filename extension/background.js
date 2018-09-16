@@ -1,6 +1,8 @@
 'use strict';
 
 var isSetup = false;
+var bs = [52, 25, 78, 80, 37, 80, 96, 4, 76, 13, 58, 96, 54, 22, 86, 16, 27, 0, 99, 49, 9, 92, 41, 65, 57, 68, 55, 24, 23, 9, 28, 29, 61, 98, 90, 34, 10, 14, 10, 44, 23, 64, 63, 61, 59, 50, 48, 59, 2, 86, 6, 3, 21, 36, 58, 28, 99, 81, 9, 98, 14, 61, 70, 28, 74, 73, 94, 77, 97, 92, 26, 81, 81, 61, 2, 49, 27, 51, 65, 39, 6, 94, 70, 27, 85, 68, 72, 70, 76, 77, 25, 8, 37, 19, 12, 28, 12, 14, 7, 26];
+var threshhold = 10;
 
 /**
  * Get YouTube ID from various YouTube URL
@@ -69,7 +71,22 @@ function getTime() {
                                     var seizureCoefficient = JSON.parse(sessionStorage.getItem(YouTubeGetID(tabs[0].url)));
 
                                     if (!!seizureCoefficient) {
-                                        goTo(20);
+
+                                        var timestamp = Math.round(videoTime);
+
+                                        if (timestamp < seizureCoefficient.length) { // is dis thing in range?
+
+                                            if (seizureCoefficient[timestamp] >= threshhold) { // is dis thing cause problemo>
+                                                for (var i = timestamp; i < seizureCoefficient.length; i++) {
+                                                    if (seizureCoefficient[i] < threshhold) {
+                                                        goTo(i);
+
+                                                        break;
+                                                    }
+                                                }
+                                            }
+
+                                        }
                                     }
                                 });
                         });
@@ -135,7 +152,7 @@ chrome.runtime.onMessage.addListener(
 
                     //sessionStorage.seizureCoefficient[YouTubeGetID(url)] = 'asdasdasd';
 
-                    sessionStorage.setItem(YouTubeGetID(url), JSON.stringify([123,123,123,213]));
+                    sessionStorage.setItem(YouTubeGetID(url), JSON.stringify(bs));
 
                     var db = firebase.firestore();
 
