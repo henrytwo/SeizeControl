@@ -1,5 +1,28 @@
 'use strict';
 
+/**
+ * Get YouTube ID from various YouTube URL
+ * @author: takien
+ * @url: http://takien.com
+ * For PHP YouTube parser, go here http://takien.com/864
+ */
+
+
+
+function YouTubeGetID(url){
+    var ID = '';
+    url = url.replace(/(>|<)/gi,'').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
+    if(url[2] !== undefined) {
+        ID = url[2].split(/[^0-9a-z_\-]/i);
+        ID = ID[0];
+    }
+    else {
+        ID = url;
+    }
+    return ID;
+}
+
+
 function pause() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.executeScript(
@@ -48,55 +71,56 @@ chrome.runtime.onMessage.addListener(
             case "checkTab":
                 chrome.pageAction.show(sender.tab.id);
 
-                var config = {
-                    apiKey: "AIzaSyCIRwF_GRv3mv5TJdk41lI0Cs75ous1JyM",
-                    authDomain: "hack-216504.firebaseapp.com",
-                    databaseURL: "https://hack-216504.firebaseio.com",
-                    projectId: "hack-216504",
-                    storageBucket: "hack-216504.appspot.com",
-                    messagingSenderId: "449878405558"
-                };
 
-                firebase.initializeApp(config);
 
-                firebase.firestore().settings({
-                    timestampsInSnapshots: true
-                });
 
-                firebase.firestore().enablePersistence()
-                    .then(function() {
-                        return firebase.auth().signInAnonymously();
-                    })
-                    .then(function() {
+                /*
+                injectLibrary('https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js', function() {
+                */
+                /*
+                chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                    chrome.tabs.executeScript(
+                        tabs[0].id,
+                        {code: 'swal("Hello, world!")'});
+                });*/
 
-                        alert('firebase shit is working')
+                var url = sender.tab.url;
+                var db = firebase.firestore();
 
-                        /*
-                        injectLibrary('https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js', function() {
-                        */
-                        /*
-                        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                            chrome.tabs.executeScript(
-                                tabs[0].id,
-                                {code: 'swal("Hello, world!")'});
-                        });*/
+                if (url != YouTubeGetID(url)) {
 
-                        var url = sender.tab.url;
+                    alert(YouTubeGetID(url));
+                    db.collection("videos").where("id", "==", YouTubeGetID(url))
+                        .get()
+                        .then(function (doc) {
+                            alert(doc.data);
+                        })
+                        .catch(function (error) {
+                            alert(error)
+                        });
 
-                        if (1) { // url known
-                            // get shit pls
-                        } else {
-                            // add 2 queue
+                    if (0) { // url known
+                        // get shit pls
+                    } else {
 
-                            // start listener
-                        }
+                        db.collection("videos").add({
+                            id: YouTubeGetID(url)
+                        })
+                        .then(function(docRef) {
+                            console.log("Document written with ID: ", docRef.id);
+                        })
+                        .catch(function(error) {
+                            console.error("Error adding document: ", error);
+                        });
 
-                        /*
-                        });*/
+                        // add 2 queue
 
-                    }).catch(function(err) {
-                        alert(err);
-                    });
+                        // start listener
+                    }
+
+                    /*
+                    });*/
+                }
 
                 break;
             case 'hrrr':
@@ -117,14 +141,26 @@ chrome.runtime.onMessage.addListener(
 chrome.runtime.onInstalled.addListener(function() {
 
     var config = {
-        apiKey: "<API_KEY>",
-        authDomain: "<PROJECT_ID>.firebaseapp.com",
-        databaseURL: "https://<DATABASE_NAME>.firebaseio.com",
-        projectId: "<PROJECT_ID>",
-        storageBucket: "<BUCKET>.appspot.com",
-        messagingSenderId: "<SENDER_ID>",
+        apiKey: "AIzaSyCIRwF_GRv3mv5TJdk41lI0Cs75ous1JyM",
+        authDomain: "hack-216504.firebaseapp.com",
+        databaseURL: "https://hack-216504.firebaseio.com",
+        projectId: "hack-216504",
+        storageBucket: "hack-216504.appspot.com",
+        messagingSenderId: "449878405558"
     };
+
     firebase.initializeApp(config);
+
+    firebase.firestore().settings({
+        timestampsInSnapshots: true
+    });
+
+    firebase.firestore().enablePersistence()
+        .then(function() {
+            return firebase.auth().signInAnonymously();
+        }).catch(function(err) {
+        alert(err);
+    });
 
 });
 
