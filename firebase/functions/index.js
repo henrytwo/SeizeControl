@@ -34,7 +34,7 @@ exports.dequeueVideo = functions.firestore
         });*/
 
         request.post({
-            url: 'https://htn.henrytu.me',
+            url: 'https://htn.henrytu.me/api/process',
             form: {
                 url: url
             }
