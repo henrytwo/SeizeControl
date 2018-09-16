@@ -1,11 +1,11 @@
 {
-  "name": "FlashyThing",
+  "name": "SeizeControl",
   "version": "1.0",
   "description": "Detect flashes???",
   "permissions": ["activeTab", "storage","tabs", "http://*/*", "https://*/*"],
   "options_page": "options.html",
   "background": {
-    "scripts": ["thirdParty/jquery-3.3.1.slim.min.js", "thirdParty/sweetalert.min.js", "background.js"],
+    "scripts": ["thirdParty/firebase-app.js", "thirdParty/firebase-auth.js", "thirdParty/firebase-firestore.js", "thirdParty/jquery-3.3.1.slim.min.js", "thirdParty/sweetalert.min.js", "background.js"],
     "persistent": false
   },
   "content_scripts" : [

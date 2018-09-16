@@ -2,8 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script src="thirdParty/jquery-3.3.1.slim.min.js"></script>
-    <script src="popup.js"></script>
+    <script defer src="thirdParty/jquery-3.3.1.slim.min.js"></script>
+    <script defer src="thirdParty/sweetalert.min.js"></script>
+    <script defer src="thirdParty/firebase-app.js"></script>
+    <script defer src="thirdParty/firebase-auth.js"></script>
+    <script defer src="thirdParty/firebase-firestore.js"></script>
+    <script defer src="popup.js"></script>
 
     <div id = "switchShit" style = "padding-right: 20px">
     <style>
@@ -76,23 +80,23 @@
 
 <div style="width: 150px; height: 200px">
     <div id = "titleText" style = "vertical-align: middle">
-    <h1 style = "font-size: 20px">random shitty stuff</h1>
-      <!-- img src logo here -->
+        <h1 style = "font-size: 20px">random shitty stuff</h1>
+        <!-- img src logo here -->
     </div>
 
     <h2 style = "font-size: 15px; display: inline-block; float: left">Enable</h2>
 
 
-<div id = "autoskipOption" style="display: table; float: left">
-  <label class="container">Autoskip
-  <input type="radio" checked="checked" name="radio">
-  <span class="checkmark"></span>
-  </label>
-  <label class="container">Prompt
-  <input type="radio" name="radio">
-  <span class="checkmark"></span>
-  </label>
-</div>
+    <div id = "autoskipOption" style="display: table; float: left">
+        <label class="container">Autoskip
+            <input type="radio" checked="checked" name="radio">
+            <span class="checkmark"></span>
+        </label>
+        <label class="container">Prompt
+            <input type="radio" name="radio">
+            <span class="checkmark"></span>
+        </label>
+    </div>
 
 
 </div>
