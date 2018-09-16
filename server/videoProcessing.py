@@ -4,8 +4,8 @@ import os
 import cv2
 import numpy
 from matplotlib import pyplot
-
-
+import time
+import threading
 
 
 
@@ -54,7 +54,7 @@ class video:
 
         stream = yt.streams.filter(res=qualityList[counter], only_audio=False, mime_type="video/mp4").first()
         stream.download()
-        print(qualityList[counter])
+
 
         cap = cv2.VideoCapture(yt.title + ".mp4")
         frameList = []
@@ -63,7 +63,6 @@ class video:
         ret, frame = cap.read()
         self.width, self.height = len(frame[0]), len(frame)
         frameCount = 0
-        print(yt.streams.filter(res=qualityList[counter], only_audio=False, mime_type="video/mp4").first())
         FPS = 30
         while (cap.isOpened()):
 
@@ -86,7 +85,9 @@ class video:
 
             frameCount += 1
         print(self.scores)
-        #os.remove(yt.title+".mp4")
+        time.sleep(5000)
+        os.remove(yt.title+".mp4")
+        os.remove("cvimg.png")
 
     #Gets colour change using dist formula
     def colourDist(self, col1, col2):
@@ -94,39 +95,40 @@ class video:
 
     #Takes black and white cv edge frame and finds stripe patterns
     def stripeVal(self, Eframe):
-        print(Eframe[0])
-        lineList = [[[0, 0] for j in range(80)] for i in range(45)]
-        for i in range(0, self.height, self.height//45):
-            for j in range(0, self.width, self.width//80):
+        lineList = [[[0, 0] for j in range(self.height//10+1)] for i in range(self.width//10+1)]
+        for i in range(0, self.height-10, 10):
+            for j in range(0, self.width-10, 10):
                 n = 0
                 points = []
-                for k in range(self.height//80):
-                    for m in range(self.width//45):
-                        if Eframe[i*self.height//45+k][j*self.width//80+m] == (255, 255, 255):
+                for k in range(10):
+                    for m in range(10):
+                        #print(i, j, k, m)
+                        if Eframe[i+k][j+m] == 255:
                             n += 1
-                            points.append((i*self.height//45+k, j*self.width//80+m))
+                            points.append((j+k, i+m))
+                #print(points)
                 if len(points) != 0:
                     sumx = sum(a[0] for a in points)
                     sumy = sum(a[1] for a in points)
                     sumxy = sum(a[0]*a[1] for a in points)
                     sumxx = sum(a[0]**2 for a in points)
                     sumyy = sum(a[1]**2 for a in points)
-                    correlation = (n*sumxy-sumx*sumy)/sqrt((n*sumxx-sumx**2)*(n*sumyy-sumy**2))
-                    slope = (sumxy - ((sumx*sumy)/n))/(sumxx - (sumx**2)/n)
+                    correlation = (n*sumxy-sumx*sumy)/sqrt(0.01+(n*sumxx-sumx**2)*(n*sumyy-sumy**2))
+                    slope = (sumxy - ((sumx*sumy)/n))/(0.01 + sumxx - (sumx**2)/n)
                     if correlation > 0.9:
-                        lineList[i][j] = [correlation, slope]
+                        lineList[j//10][i//10] = [correlation, slope]
                     else:
-                        lineList[i][j] = None
+                        lineList[j//10][i//10] = [0, 0]
                 else:
-                    lineList[i][j] = None
+                    #print(j, i, len(lineList), len(lineList[0]))
+                    lineList[j//10][i//10] = [0, 0]
         score = 0
         angleTots = [0, 0, 0, 0, 0, 0]
         for i in lineList:
             for j in i:
                 angleTots[int(atan(j[1])//(pi/6))] += j[0]**5
-        s = sqrt(sum([i**1.2 for i in angleTots]))/136 #maximum of 1, value of stripe count found
-        #print(s)
-        return s
+        s = (sum([i**2 for i in angleTots])) #maximum of 1, value of stripe count found
+        return 100/(s+1)
 
     #Gets basic contrast of Cframe (0 to 100)
     def totContrast(self, Cframe):
@@ -154,7 +156,7 @@ class video:
                 contrastFrame[i][j] = self.colourDist(frame1[i][j], frame2[i][j])
         cv2.imwrite('cvimg.png', frame1) #Somehow convert pixelarray for frame1 into a png
         edges = cv2.Canny(frame1, 50, 300)
-        return (self.totContrast(contrastFrame))# + self.stripeVal(edges))/2
+        return (self.totContrast(contrastFrame) + self.stripeVal(edges))/2
 
 
-test = video("https://www.youtube.com/watch?v=LHCob76kigA&list=RDLHCob76kigA&start_radio=1&t=59")
+test = video("https://www.youtube.com/watch?v=PCicKydX5GE")
