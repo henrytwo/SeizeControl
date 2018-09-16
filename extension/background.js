@@ -30,6 +30,9 @@ function listen(id) {
     //alert("ok we listening")
     var listener = db.collection("videos").doc(id).onSnapshot(function(data) {
         if (data.exists) {
+
+            sessionStorage.setItem(YouTubeGetID(url), JSON.stringify(data.get('coefficient')));
+
             alert('Video processed!')
             listener(); // Terminate
         }
@@ -152,7 +155,7 @@ chrome.runtime.onMessage.addListener(
 
                     //sessionStorage.seizureCoefficient[YouTubeGetID(url)] = 'asdasdasd';
 
-                    sessionStorage.setItem(YouTubeGetID(url), JSON.stringify(bs));
+                    //sessionStorage.setItem(YouTubeGetID(url), JSON.stringify(bs));
 
                     var db = firebase.firestore();
 
@@ -161,12 +164,13 @@ chrome.runtime.onMessage.addListener(
                         .then(function (doc) {
 
                             if (doc.exists) { // url known
-                                alert('lmao i fcking know what this is')
-                                console.log(doc.data());
+                                //alert('lmao i fcking know what this is')
+                                //console.log(doc.data());
+
+                                sessionStorage.setItem(YouTubeGetID(url), JSON.stringify(doc.get('coefficient')));
 
                                 // get shit pls
                             } else {
-
 
                                 db.collection("queue").doc(YouTubeGetID(url))
                                     .get()
@@ -210,6 +214,8 @@ chrome.runtime.onMessage.addListener(
                 }
 
                 break;
+
+                /*
             case 'hrrr':
 
                 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -219,7 +225,7 @@ chrome.runtime.onMessage.addListener(
                 });
 
                 goTo(20);
-                break;
+                break;*/
 
         }
 
