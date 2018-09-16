@@ -35,9 +35,12 @@ exports.dequeueVideo = functions.firestore
 
         request.post({
             url: 'https://htn.henrytu.me/api/process',
-            form: {
+            json: {
                 url: url
-            }
+            },
+            headers: {
+                'Content-Type': 'application/json'
+            },
         }, function(e, r, b) {
             if (!e && r.statusCode == 200) {
                 return Promise.resolve('ok');

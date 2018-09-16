@@ -75,7 +75,7 @@ function getTime() {
 
                                     if (!!seizureCoefficient) {
 
-                                        var timestamp = Math.round(videoTime);
+                                        var timestamp = Math.round(videoTime * 4);
 
                                         if (timestamp < seizureCoefficient.length) { // is dis thing in range?
 
