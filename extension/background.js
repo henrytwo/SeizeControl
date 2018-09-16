@@ -51,7 +51,7 @@ function play() {
     });
 }
 
-function getTime(callback) {
+function getTime() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.executeScript(
             tabs[0].id,
@@ -60,18 +60,19 @@ function getTime(callback) {
                 // Some dark magic going on here
                 try {
                     if (videoElement[0] !== undefined) {
-
-                        alert('Yes...')
-
-                        /*
                         chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
                             chrome.tabs.executeScript(
                                 tabs[0].id,
-                                {code: 'document.getElementsByTagName("video")[0].currentTime;'}, function (shit2) {
-                                    alert(shit2);
-                                });
-                        });*/
+                                {code: 'document.getElementsByTagName("video")[0].currentTime;'}, function (videoTime) {
 
+                                    //alert(JSON.stringify(sessionStorage));
+                                    var seizureCoefficient = JSON.parse(sessionStorage.getItem(YouTubeGetID(tabs[0].url)));
+
+                                    if (!!seizureCoefficient) {
+                                        goTo(20);
+                                    }
+                                });
+                        });
                     }
                 } catch (e) {
                     //alert(e);
@@ -131,6 +132,10 @@ chrome.runtime.onMessage.addListener(
                 if (url != YouTubeGetID(url)) {
 
                     //alert(YouTubeGetID(url));
+
+                    //sessionStorage.seizureCoefficient[YouTubeGetID(url)] = 'asdasdasd';
+
+                    sessionStorage.setItem(YouTubeGetID(url), JSON.stringify([123,123,123,213]));
 
                     var db = firebase.firestore();
 
@@ -210,6 +215,8 @@ chrome.runtime.onInstalled.addListener(function() {
 function setup() {
     if (!isSetup) {
         isSetup = true;
+
+        //sessionStorage.seizureCoefficient = {};
 
         var config = {
             apiKey: "AIzaSyCIRwF_GRv3mv5TJdk41lI0Cs75ous1JyM",
