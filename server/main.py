@@ -15,6 +15,8 @@ def process():
 
     response = Response()
 
+    print('Incoming request...', data)
+
     seizureCoefficient = video('https://www.youtube.com/watch?v=' + data['url']).scores
     #seizureCoefficient = [1,2,3]
 
