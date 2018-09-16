@@ -7,11 +7,6 @@ from matplotlib import pyplot
 import time
 import threading
 
-
-
-
-
-
 class video:
     def __init__(self, url):
         self.url = url
@@ -84,7 +79,7 @@ class video:
                 break
 
             frameCount += 1
-        print(self.scores)
+        #print(self.scores)
         time.sleep(5000)
         os.remove(yt.title+".mp4")
         os.remove("cvimg.png")
@@ -144,7 +139,7 @@ class video:
     #Sends fixed score to server
     def sendScore(self):
         start = max(0, len(self.scores)-10)
-        print(sum(self.scores[start:len(self.scores)])/(len(self.scores)-start))
+        #print(sum(self.scores[start:len(self.scores)])/(len(self.scores)-start))
         #Send to database
 
 
@@ -158,5 +153,5 @@ class video:
         edges = cv2.Canny(frame1, 50, 300)
         return (self.totContrast(contrastFrame) + self.stripeVal(edges))/2
 
-
-test = video("https://www.youtube.com/watch?v=PCicKydX5GE")
+if __name__ == '__main__':
+    test = video("https://www.youtube.com/watch?v=PCicKydX5GE")

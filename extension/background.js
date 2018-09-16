@@ -1,5 +1,7 @@
 'use strict';
 
+var isSetup = false;
+
 /**
  * Get YouTube ID from various YouTube URL
  * @author: takien
@@ -23,11 +25,11 @@ function YouTubeGetID(url){
 function listen(id) {
     var db = firebase.firestore();
 
-    alert("ok we listening")
+    //alert("ok we listening")
     var listener = db.collection("videos").doc(id).onSnapshot(function(data) {
         if (data.exists) {
-            alert('LOLOLOL WE GOT IT')
-            listener();
+            alert('Video processed!')
+            listener(); // Terminate
         }
     })
 
@@ -46,6 +48,35 @@ function play() {
         chrome.tabs.executeScript(
             tabs[0].id,
             {code: 'document.getElementsByTagName("video")[0].play();'});
+    });
+}
+
+function getTime(callback) {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.executeScript(
+            tabs[0].id,
+            {code: 'document.getElementsByTagName("video");'}, function (videoElement) {
+
+                // Some dark magic going on here
+                try {
+                    if (videoElement[0] !== undefined) {
+
+                        alert('Yes...')
+
+                        /*
+                        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                            chrome.tabs.executeScript(
+                                tabs[0].id,
+                                {code: 'document.getElementsByTagName("video")[0].currentTime;'}, function (shit2) {
+                                    alert(shit2);
+                                });
+                        });*/
+
+                    }
+                } catch (e) {
+                    //alert(e);
+                }
+            })
     });
 }
 
@@ -78,7 +109,11 @@ function injectLibrary(url, callback) {
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         switch (request.command) {
+
             case "checkTab":
+
+                setup();
+
                 chrome.pageAction.show(sender.tab.id);
 
                 /*
@@ -92,11 +127,13 @@ chrome.runtime.onMessage.addListener(
                 });*/
 
                 var url = sender.tab.url;
-                var db = firebase.firestore();
 
                 if (url != YouTubeGetID(url)) {
 
-                    alert(YouTubeGetID(url));
+                    //alert(YouTubeGetID(url));
+
+                    var db = firebase.firestore();
+
                     db.collection("videos").doc(YouTubeGetID(url))
                         .get()
                         .then(function (doc) {
@@ -115,18 +152,17 @@ chrome.runtime.onMessage.addListener(
 
                                         if (doc.exists) {
 
-                                            alert('processing bro...')
+                                            alert('Video is being processed')
                                             listen(YouTubeGetID(url));
 
                                         } else {
 
                                             var db = firebase.firestore();
 
-                                            alert('adding dis dude')
+                                            alert('This is a new video. Please wait a moment as we process this request.')
                                             db.collection("queue").doc(YouTubeGetID(url))
                                                 .set({})
                                                 .then(function(docRef) {
-                                                    alert('done')
                                                     listen(YouTubeGetID(url));
                                                 })
                                                 .catch(function(error) {
@@ -168,25 +204,33 @@ chrome.runtime.onMessage.addListener(
     });
 
 chrome.runtime.onInstalled.addListener(function() {
-
-    var config = {
-        apiKey: "AIzaSyCIRwF_GRv3mv5TJdk41lI0Cs75ous1JyM",
-        authDomain: "hack-216504.firebaseapp.com",
-        databaseURL: "https://hack-216504.firebaseio.com",
-        projectId: "hack-216504",
-        storageBucket: "hack-216504.appspot.com",
-        messagingSenderId: "449878405558"
-    };
-
-    firebase.initializeApp(config);
-
-    firebase.firestore().settings({
-        timestampsInSnapshots: true
-    });
-
-    firebase.auth().signInAnonymously();
-
+    setup();
 });
+
+function setup() {
+    if (!isSetup) {
+        isSetup = true;
+
+        var config = {
+            apiKey: "AIzaSyCIRwF_GRv3mv5TJdk41lI0Cs75ous1JyM",
+            authDomain: "hack-216504.firebaseapp.com",
+            databaseURL: "https://hack-216504.firebaseio.com",
+            projectId: "hack-216504",
+            storageBucket: "hack-216504.appspot.com",
+            messagingSenderId: "449878405558"
+        };
+
+        firebase.initializeApp(config);
+
+        firebase.firestore().settings({
+            timestampsInSnapshots: true
+        });
+
+        firebase.auth().signInAnonymously();
+
+        setInterval(getTime, 1000);
+    }
+}
 
 /*
 chrome.runtime.onInstalled.addListener(function() {
