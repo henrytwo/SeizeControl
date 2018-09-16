@@ -9,13 +9,82 @@
     <script defer src="thirdParty/firebase-firestore.js"></script>
     <script defer src="popup.js"></script>
 
-    <div id = "switchShit" style = "padding-right: 20px">
+</head>
+<body>
+
+<div style="width: 150px; height: 200px">
+
+
+    <div id = "titleText" style = "display: table">
+        <h1 style = "font-size: 17px; display: inline; top: 20px">SeizeControl</h1>
+      <!-- img src logo here -->
+        <img src = icons/moreshit.png height = "30" weight = "30" style = "float: left; display: inline;" hspace = "8" ></img>
+    </div>
+
+
+    <div id = "enable" style = "margin-top: 10px" >
+
+        <h2 style = "font-size: 14px; display: inline-block; float: left; padding: 0; margin: 0">Enable</h2>
+
+        <div id = "toggleSwitch" style = "display: inline; float: right" >
+
+        <label class="switch">
+            <input type="checkbox">
+            <span class="slider round"></span>
+        </label>
+
+        </div>
+    </div>
+
+
+    <!--<div id = "autoskipOption" style="display: table; float: left; margin-top: 5px">-->
+        <!--<label class="container"> <h2 style = "font-size: 14px; padding: 0; margin: 0; display: inline-block; vertical-align: right">Autoskip</h2>-->
+            <!--<input type="radio" checked="checked" name="radio" style = "display: inline-block; vertical-align: left">-->
+            <!--<span class="checkmark"></span>-->
+        <!--</label>-->
+    <!--</div>-->
+
+    <!--<div id = "promptOption" style="display: table; float: left; margin-top: 5px">-->
+    <!--<label class="container"><h2 style = "font-size: 14px; vertical-align:right; display: inline-block; padding: 0; margin: 0">Prompt</h2>-->
+  <!--<input type="radio" name="radio" style = "vertical-align: left; display: inline-block">-->
+  <!--<span class="checkmark"></span>-->
+  <!--</label>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+
+     <div id = "autoSkipOption" style = "margin-top: 10px" >
+
+        <h2 style = "font-size: 14px; display: inline-block; float: left; padding: 0; margin: 0">Autoskip</h2>
+
+        <div id = "toggleSwitch" style = "display: inline; float: right" >
+
+        <label class="switch">
+            <input type="checkbox">
+            <span class="slider round"></span>
+        </label>
+
+        </div>
+    </div>
+
+<div id = "help">
+   <h2 style = "font-size: 14px; vertical-align:right; display: inline-block; padding: 0; margin: 0">Help</h2>
+</div>
+
+<div id = "feedback">
+   <h2 style = "font-size: 14px; vertical-align:right; display: inline-block; padding: 0; margin: 0">Feedback</h2>
+</div>
+</body>
+</html>
+
+
+
     <style>
     .switch {
       position: relative;
       display: inline-block;
-      width: 60px;
-      height: 34px;
+      width: 30px;
+      height: 17px;
     }
 
     .switch input {display:none;}
@@ -36,11 +105,11 @@
       position: absolute;
       content: "";
       /*height and width of inner circle*/
-      height: 26px;
-      width: 26px;
+      height: 13px;
+      width: 13px;
       /*positioning of circle within switch*/
-      left: 4px;
-      bottom: 4px;
+      left: 2px;
+      bottom: 2px;
       background-color: white;
 
       /*add smooth slide*/
@@ -60,45 +129,17 @@
 
     /*moves inner white dot left and right */
     input:checked + .slider:before {
-      -webkit-transform: translateX(26px);
-      -ms-transform: translateX(26px);
-      transform: translateX(26px);
+      -webkit-transform: translateX(13px);
+      -ms-transform: translateX(13px);
+      transform: translateX(13px);
     }
 
     /* Rounded sliders */
     .slider.round {
-      border-radius: 34px;
+      border-radius: 17px;
     }
 
     .slider.round:before {
       border-radius: 50%;
     }
-    </div>
     </style>
-</head>
-<body>
-
-<div style="width: 150px; height: 200px">
-    <div id = "titleText" style = "vertical-align: middle">
-        <h1 style = "font-size: 20px">random shitty stuff</h1>
-        <!-- img src logo here -->
-    </div>
-
-    <h2 style = "font-size: 15px; display: inline-block; float: left">Enable</h2>
-
-
-    <div id = "autoskipOption" style="display: table; float: left">
-        <label class="container">Autoskip
-            <input type="radio" checked="checked" name="radio">
-            <span class="checkmark"></span>
-        </label>
-        <label class="container">Prompt
-            <input type="radio" name="radio">
-            <span class="checkmark"></span>
-        </label>
-    </div>
-
-
-</div>
-</body>
-</html>

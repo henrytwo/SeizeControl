@@ -8,6 +8,13 @@
     "scripts": ["thirdParty/firebase-app.js", "thirdParty/firebase-auth.js", "thirdParty/firebase-firestore.js", "thirdParty/jquery-3.3.1.slim.min.js", "thirdParty/sweetalert.min.js", "background.js"],
     "persistent": false
   },
+  "icons":{
+    "512": "icons/512.png",
+    "256": "icons/256.png",
+    "128": "icons/128.png",
+    "64": "icons/64.png",
+    "32": "icons/moreshit.png"
+  },
   "content_scripts" : [
     {
       "matches": [
@@ -21,6 +28,7 @@
     }
   ],
   "page_action": {
+    "default_icon": "icons/moreshit.png",
     "default_popup": "popup.html"
   },
   "manifest_version": 2
