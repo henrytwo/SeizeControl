@@ -1,15 +1,13 @@
 from flask import Flask, request, Response
 import multiprocessing
 import firebase_admin
-from firebase_admin import credentials
+from firebase_admin import credentials, firestore
 from videoProcessing import video
 
 app = Flask(__name__)
 
-"""
-cred = credentials.Certificate("path/to/serviceAccountKey.json")
+cred = credentials.Certificate("servicekey.json")
 firebase_admin.initialize_app(cred)
-"""
 
 @app.route('/api/process', methods=['POST'])
 def process():
@@ -17,8 +15,11 @@ def process():
 
     response = Response()
 
-    print(data)
-    print(video(data['url']).scores)
+    seizureCoefficient = video('https://www.youtube.com/watch?v=' + data['url']).scores
+    #seizureCoefficient = [1,2,3]
+
+    firebase_admin.firestore.client(app=None).collection('videos').document(data['url']).set({'coefficient':seizureCoefficient})
+    firebase_admin.firestore.client(app=None).collection('queue').document(data['url']).delete()
 
     return 'ok'
 

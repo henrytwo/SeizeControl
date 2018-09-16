@@ -1,4 +1,5 @@
 const functions = require('firebase-functions');
+const request = require('require');
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
@@ -16,10 +17,20 @@ exports.dequeueVideo = functions.firestore
         // e.g. {'name': 'Marie', 'age': 66}
         const newValue = snap.data();
 
+        console.log(snap, context)
+
         // access a particular field as you would any JS property
         const name = newValue.name;
 
-        var url = 'https://www.youtube.com/watch?v=' + newValue.videoId;
+        var url = newValue.videoId;
+
+        console.log(url);
+
+        request('https://htn.henrytu.me', function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                return Promise.resolve('ok');
+            }
+        });
 
         // perform desired operations ...
     });
