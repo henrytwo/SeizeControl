@@ -7,8 +7,6 @@
  * For PHP YouTube parser, go here http://takien.com/864
  */
 
-
-
 function YouTubeGetID(url){
     var ID = '';
     url = url.replace(/(>|<)/gi,'').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
@@ -22,6 +20,15 @@ function YouTubeGetID(url){
     return ID;
 }
 
+function listen(id) {
+    var db = firebase.firestore();
+
+    alert("ok we listening")
+    const listener = db.collection("videos").doc(id).onSnapshot(function(data) {
+        alert('STUFF CHANGED!!!!' + data.exists)
+    })
+
+}
 
 function pause() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -71,9 +78,6 @@ chrome.runtime.onMessage.addListener(
             case "checkTab":
                 chrome.pageAction.show(sender.tab.id);
 
-
-
-
                 /*
                 injectLibrary('https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js', function() {
                 */
@@ -92,27 +96,43 @@ chrome.runtime.onMessage.addListener(
                     alert(YouTubeGetID(url));
                     db.collection("videos").doc(YouTubeGetID(url))
                         .get()
-                        .then(function (docs) {
+                        .then(function (doc) {
 
-                            if (docs.exists) { // url known
-                                alert('IK DIS ONE!!!');
+                            if (doc.exists) { // url known
+                                alert('lmao i fcking know what this is')
+                                console.log(doc.data());
 
                                 // get shit pls
                             } else {
 
-                                alert('adding dis dude')
-                                db.collection("videos").doc(YouTubeGetID(url))
-                                .set({
-                                    cool: true
-                                })
-                                .then(function(docRef) {
-                                    alert('done')
-                                    //console.log("Document written with ID: ", docRef.id);
-                                })
-                                .catch(function(error) {
-                                    alert(error)
-                                    //console.error("Error adding document: ", error);
-                                });
+
+                                db.collection("queue").doc(YouTubeGetID(url))
+                                    .get()
+                                    .then(function (doc) {
+
+                                        if (doc.exists) {
+
+                                            alert('processing bro...')
+                                            listen(YouTubeGetID(url));
+
+                                        } else {
+
+                                            var db = firebase.firestore();
+
+                                            alert('adding dis dude')
+                                            db.collection("queue").doc(YouTubeGetID(url))
+                                                .set({})
+                                                .then(function(docRef) {
+                                                    alert('done')
+                                                    listen(YouTubeGetID(url));
+                                                })
+                                                .catch(function(error) {
+                                                    alert(error)
+                                                    //console.error("Error adding document: ", error);
+                                                });
+
+                                        }
+                                    });
 
                                 // add 2 queue
 
@@ -161,12 +181,7 @@ chrome.runtime.onInstalled.addListener(function() {
         timestampsInSnapshots: true
     });
 
-    firebase.firestore().enablePersistence()
-        .then(function() {
-            return firebase.auth().signInAnonymously();
-        }).catch(function(err) {
-        alert(err);
-    });
+    firebase.auth().signInAnonymously();
 
 });
 
