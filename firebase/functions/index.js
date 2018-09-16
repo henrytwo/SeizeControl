@@ -1,5 +1,5 @@
 const functions = require('firebase-functions');
-const request = require('require');
+const request = require('request');
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
@@ -17,20 +17,32 @@ exports.dequeueVideo = functions.firestore
         // e.g. {'name': 'Marie', 'age': 66}
         const newValue = snap.data();
 
-        console.log(snap, context)
+        console.log(snap, context.params.videoId)
 
         // access a particular field as you would any JS property
         const name = newValue.name;
 
-        var url = newValue.videoId;
+        var url = context.params.videoId;
 
         console.log(url);
 
+        /*
         request('https://htn.henrytu.me', function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 return Promise.resolve('ok');
             }
-        });
+        });*/
+
+        request.post({
+            url: 'https://htn.henrytu.me',
+            form: {
+                url: url
+            }
+        }, function(e, r, b) {
+            if (!e && r.statusCode == 200) {
+                return Promise.resolve('ok');
+            }
+        })
 
         // perform desired operations ...
     });
