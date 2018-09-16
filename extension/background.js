@@ -90,33 +90,39 @@ chrome.runtime.onMessage.addListener(
                 if (url != YouTubeGetID(url)) {
 
                     alert(YouTubeGetID(url));
-                    db.collection("videos").where("id", "==", YouTubeGetID(url))
+                    db.collection("videos").doc(YouTubeGetID(url))
                         .get()
-                        .then(function (doc) {
-                            alert(doc.data);
+                        .then(function (docs) {
+
+                            if (docs.exists) { // url known
+                                alert('IK DIS ONE!!!');
+
+                                // get shit pls
+                            } else {
+
+                                alert('adding dis dude')
+                                db.collection("videos").doc(YouTubeGetID(url))
+                                .set({
+                                    cool: true
+                                })
+                                .then(function(docRef) {
+                                    alert('done')
+                                    //console.log("Document written with ID: ", docRef.id);
+                                })
+                                .catch(function(error) {
+                                    alert(error)
+                                    //console.error("Error adding document: ", error);
+                                });
+
+                                // add 2 queue
+
+                                // start listener
+                            }
+
                         })
                         .catch(function (error) {
                             alert(error)
                         });
-
-                    if (0) { // url known
-                        // get shit pls
-                    } else {
-
-                        db.collection("videos").add({
-                            id: YouTubeGetID(url)
-                        })
-                        .then(function(docRef) {
-                            console.log("Document written with ID: ", docRef.id);
-                        })
-                        .catch(function(error) {
-                            console.error("Error adding document: ", error);
-                        });
-
-                        // add 2 queue
-
-                        // start listener
-                    }
 
                     /*
                     });*/
