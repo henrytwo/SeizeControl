@@ -19,5 +19,7 @@ exports.dequeueVideo = functions.firestore
         // access a particular field as you would any JS property
         const name = newValue.name;
 
+        var url = 'https://www.youtube.com/watch?v=' + newValue.videoId;
+
         // perform desired operations ...
     });
