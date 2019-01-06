@@ -1,1 +1,1 @@
-# Hack-the-North-Thing
+# Hack-the-North-Chrome extension
